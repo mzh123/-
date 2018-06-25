@@ -70,32 +70,37 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>头像缩略图</th>
-                                    <th>用户名</th>
-                                    <th>邮箱</th>
-                                    <th>手机号</th>
-                                    <th>性别</th>
+                                    <th>商品缩略图</th>
+                                    <th>商品名</th>
+                                    <th>商品所属分类</th>
+                                    <th>价格</th>
+                                    <th>库存</th>
+                                    <th>点击量</th>
+                                    <th>购买数量</th>
                                     <th>状态</th>
-                                    <th>注册时间</th>
+                                    <th>添加时间</th>
                                     <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            {% for v in userlist %}
+                            {% for v in glist %}
                                 <tr>
                                     <td class="am-text-middle">{{ v.id }}</td>
                                     <td>
-                                        <img src="{{ v.pic|default:'/static/pics/moren.jpg' }}" class="tpl-table-line-img" alt="">
+                                        <img src="{{ v.pics }}" class="tpl-table-line-img" alt="">
                                     </td>
-                                    <td class="am-text-middle">{{ v.username }}</td>
-                                    <td class="am-text-middle">{{ v.email }}</td>
-                                    <td class="am-text-middle">{{ v.phone }}</td>
-                                    <td class="am-text-middle">{{ v.sex }}</td>
+                                    <td class="am-text-middle">{{ v.title }}</td>
+                                    <!-- <td class="am-text-middle">{{ v.descr|truncatechars:10 }}</td> -->
+                                    <td class="am-text-middle">{{ v.typeid.name }}</td>
+                                    <td class="am-text-middle">{{ v.price }}</td>
+                                    <td class="am-text-middle">{{ v.store }}</td>
+                                    <td class="am-text-middle">{{ v.clicknum }}</td>
+                                    <td class="am-text-middle">{{ v.num }}</td>
                                     <td class="am-text-middle">
                                         {% if v.status == 0 %}
-                                            会员
+                                            新发布
                                         {% else %}
-                                            禁用
+                                            下架
                                         {% endif %}
 
                                     </td>
@@ -128,9 +133,7 @@
                                 <li><a href="#">5</a></li>
                                 <li><a href="#">»</a></li> -->
 
-                                {% load pagetag %}
-
-                                {% PageShow userlist.paginator.num_pages request %}                   
+                                           
                             </ul>
                         </div>
                     </div>
