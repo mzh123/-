@@ -133,9 +133,26 @@
               商品详情
             </label>
             <div class="am-u-sm-9">
-              <textarea name="info">
-                
-              </textarea>
+
+
+
+              <link rel="stylesheet" type="text/css" href="/ueditor/UE/third-party/SyntaxHighlighter/shCoreDefault.css">
+              <script type="text/javascript" src="/ueditor/UE/third-party/SyntaxHighlighter/shCore.js"></script>
+              <script type="text/javascript" src="/ueditor/UE/ueditor.config.js"></script>
+              <script type="text/javascript" src="/ueditor/UE/ueditor.all.min.js"></script>
+              <script type="text/javascript" src="/ueditor/UE/lang/zh-cn/zh-cn.js"></script>
+
+
+              <script style="color:blue" id="editor" name="info" type="text/plain" style="height:500px;">
+                  
+              </script>
+         
+
+
+              <script type="text/javascript">
+                  var ue = UE.getEditor('editor');
+                  SyntaxHighlighter.all();
+              </script>
             </div>
           </div>
 
