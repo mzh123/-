@@ -15,7 +15,7 @@ def gettypesorder():
         else:
             t = Types.objects.get(id=x.pid)
             x.pname = t.name
-        num = x.path.count(',')
+        num = x.path.count(',')-1
         x.name = (num*'|---')+x.name
 
     return tlist

@@ -31,9 +31,16 @@
             <div class="am-container header">
                 <ul class="message-l">
                     <div class="topMessage">
+
                         <div class="menu-hd">
-                            <a href="#" target="_top" class="h">亲，请登录</a>
-                            <a href="#" target="_top">免费注册</a>
+                            {% if request.session.VipUser.username %}
+                                <span style="color:blue">当前登陆用户:{{ request.session.VipUser.username }}</span>
+                                <a href="{% url 'myhome_logout' %}">退出登录</a>
+
+                            {% else %}
+                            <a href="{% url 'myhome_login' %}" target="_top" class="h">亲，请登录</a>
+                            <a href="{% url 'myhome_register' %}" target="_top">免费注册</a>
+                            {% endif %}
                         </div>
                     </div>
                 </ul>

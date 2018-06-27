@@ -2,30 +2,80 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 # Create your views here.
+from myadmin.models import Users,Types,Goods
 
+from django.contrib.auth.hashers import make_password, check_password
+#首页
 def index(request):
     
+    #先获取所有顶级分类
+    data = Types.objects.filter(pid=0)
+    erdata = []
+    for x in data:
+        # print(x.name)
+        #获取当前类下的子类
+        x.sub = Types.objects.filter(pid=x.id)
 
-    return render(request,'myhome/index.html')
+        # print(x.sub)
 
+        for v in x.sub:
+            v.goodssub = Goods.objects.filter(typeid=v.id)
+
+            erdata.append(v)
+
+
+    context = {'typegoodslist':data,'erdata':erdata}
+
+    return render(request,'myhome/index.html',context)
+#列表
 def list(request):
 
     
     return render(request,'myhome/list.html')
 
-
+#详情
 def info(request):
 
 
     return render(request,'myhome/info.html')
 
-
+#登录
 def login(request):
 
-    return render(request,'myhome/login.html')
+    if request.method == 'GET':
+
+        return render(request,'myhome/login.html')
+
+    elif request.method == 'POST':
+        #执行登录
+        #根据用户先获取用户对象,再检测密码是否正确
+
+
+        try:
+            ob = Users.objects.get(username = request.POST['username'])
+
+            #检测密码是否正确
+            res = check_password(request.POST['password'],ob.password)
+
+            if res:
+                #密码正确
+                request.session['VipUser'] = {'uid':ob.id,'username':ob.username}
+
+                return HttpResponse('<script>alert("登录成功");location.href="/"</script>')
+
+        except:
+            #用户名错误
+            # 接收表单提交的数据,
+            data = request.POST.copy().dict()
+            #删除掉csrf验证的字段数据
+            del data['csrfmiddlewaretoken']
+            del data['vcode']
 
 
 
+        return HttpResponse('<script>alert("用户名或密码错误,请重新登录");history.back(-1)</script>')
+
+#注册
 def register(request):
 
     if request.method == 'GET':
@@ -33,14 +83,61 @@ def register(request):
         return render(request,'myhome/register.html')
 
     elif request.method == 'POST':
-        #证明是表单提交
-        # 接收请求参数，执行用户的添加
-        return HttpResponse('post')
+
+        #先判断验证码是否正确
+        if request.POST['vcode'].upper() != request.session['verifycode'].upper():
+            return HttpResponse('<script>alert("验证码错误");history.back(-1)</script>')
+
+        #用户数据的创建
+
+        
+        # 接收表单提交的数据,
+        data = request.POST.copy().dict()
+        #删除掉csrf验证的字段数据
+        del data['csrfmiddlewaretoken']
+        del data['vcode']
+
+
+        #进行密码加密
+           
+        data['password'] = make_password(data['password'], None, 'pbkdf2_sha256')
+
+
+        #执行用户的添加
+        try:
+            ob = Users.objects.create(**data)
+
+            #记录用户登录的状态  session
+
+            request.session['VipUser'] = {'uid':ob.id,'username':ob.username}
+
+            return HttpResponse('<script>alert("注册成功");location.href="/"</script>')
+        # except pymysql.err.Integrityerror:
+        #     return HttpResponse('<script>alert("用户名已存在");history.back(-1)="/"</script>')
+        except:
+            pass
+            
+        return HttpResponse('<script>alert("注册失败");history.back(-1)</script>')
+
+
+        # #接收请求参数,执行用户添加
+        # return HttpResponse('post')
+        
+
+
+#退出登录
+def logout(request):
+    
+
+    request.session['VipUser'] = {}
+    
+
+    return HttpResponse('<script>alert("退出成功");location.href="/"</script>')
+
 
 #验证码
 def vcode(request):
    
-
     #引入绘图模块
     from PIL import Image, ImageDraw, ImageFont
     #引入随机函数模块
