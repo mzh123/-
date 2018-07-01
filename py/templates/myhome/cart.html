@@ -1,0 +1,457 @@
+{% extends 'myhome/base.html' %}
+{% block title%}
+<title>购物车</title>
+{% endblock %}
+
+
+{% block css%}
+    <link href="/static/myhome/css/cartstyle.css" rel="stylesheet" type="text/css" />
+    <link href="/static/myhome/css/optstyle.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="/static/myhome/js/jquery.js"></script>
+{% endblock %}
+
+
+{% block con %}
+<div class="concent">
+  <div id="cartTable">
+    <div class="cart-table-th">
+      <div class="wp">
+        <div class="th th-chk">
+          <div id="J_SelectAll1" class="select-all J_SelectAll"></div>
+        </div>
+        <div class="th th-item">
+          <div class="td-inner">商品信息</div></div>
+        <div class="th th-price">
+          <div class="td-inner">单价</div></div>
+        <div class="th th-amount">
+          <div class="td-inner">数量</div></div>
+        <div class="th th-sum">
+          <div class="td-inner">金额</div></div>
+        <div class="th th-op">
+          <div class="td-inner">操作</div></div>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <div class="bundle  bundle-last ">
+      <div class="clear"></div>
+      <div class="bundle-main">
+
+
+        {% load pagetag %}
+
+          {% if not data %}
+            <div style="height: 300px;text-align: center;line-height: 300px">
+                 <p style=""> 你还没有添加商品到购物车 </p>
+            </div>
+          {% endif %}
+
+
+
+        {% for v in data %}
+        <ul class="item-content clearfix">
+          <li class="td td-chk">
+            <div class="cart-checkbox acc">
+              <input class="check" id="{{ v.id }}" name="items[]" value="{% cheng v.price v.num %}" type="checkbox">
+              <label for="J_CheckBox_170037950254"></label>
+            </div>
+          </li>
+          <li class="td td-item">
+            <div class="item-pic">
+              <a href="#" target="_blank" data-title="美康粉黛醉美东方唇膏口红正品 持久保湿滋润防水不掉色护唇彩妆" class="J_MakePoint" data-point="tbcart.8.12">
+                <img style="width:80px; height:80px;" src="{{ v.pics }}" class="itempic J_ItemImg"></a>
+            </div>
+            <div class="item-info">
+              <div class="item-basic-info">
+                <a href="#" target="_blank" class="item-title J_MakePoint" data-point="tbcart.8.11">{{ v.title }}</a></div>
+            </div>
+          </li>
+          <li class="td td-price">
+            <div class="item-price price-promo-promo">
+              <div class="price-content">
+                <div class="price-line">
+                  <em class="price-original">{{ v.price|pricetwo }}</em></div>
+                <div class="price-line">
+                  <em class="J_Price price-now" tabindex="0">{{ v.price }}</em></div>
+              </div>
+            </div>
+          </li>
+          <li class="td td-amount">
+            <div class="amount-wrapper ">
+              <div class="item-amount ">
+                <div class="sl" sid="{{ v.id }}">
+                  <input class="min am-btn" name="" type="button" value="-">
+                  <input class="text_box" name="num" type="text" value="{{ v.num }}" style="width:30px;">
+                  <input class="add am-btn" name="" type="button" value="+"></div>
+              </div>
+            </div>
+          </li>
+          <li class="td td-sum">
+            <div class="td-inner">
+              <em tabindex="0" class="J_ItemSum number">{% cheng v.price v.num %}</em></div>
+          </li>
+          <li class="td td-op">
+            <div class="td-inner">
+              <a href="javascript:;" sid="{{ v.id }}" data-point-url="#" class="delete">删除</a></div>
+          </li>
+        </ul>
+        {% endfor%}
+
+        <script type="text/javascript">
+          $(function(){
+            //删除一个购物车商品操作
+            //找到.元素  绑定一个单击事件  .单击事件   
+            $('.delete').click(function(){
+                //获取当前的商品id    attr获取  sid 这个属性
+                sid = $(this).attr('sid')
+                del = $(this)
+                // 发送ajax       第二个是参数    第三个是回调函数
+                $.get('{% url "myhome_delcart" %}',{sid:sid},function(data){
+                    // 判断if
+                    if (data == '0'){    //要把整个url删除
+
+                        alert('购物车商品删除成功')    //弹出窗口商品删除成功
+
+                        del.parents('ul').remove()  //找到ul   执行删除
+
+                        computer()     //调用计算函数    删除
+
+                    }
+                })
+            })
+            //更新 
+            //找到  元素    绑定单击事件  
+            $('.sl .am-btn').click(function(){
+                btn = $(this)
+                setTimeout(function(){
+
+                    sid = btn.parent().attr('sid')         //获取商品id  
+                    num = btn.parent().find('input[name=num]').val()
+                    // console.log(sid)
+                    // console.log(num)
+                    //发送ajax请求
+                    $.get('{% url "myhome_editcart" %}',{sid:sid,num:num},function(data){
+   
+                            location.href = ''
+                      
+                    })
+                },100)
+            })
+
+            
+            
+
+            function computer(){
+              items = []
+              totalnum = 0
+              //获取所有的check元素
+              $('.acc .check').each(function(){
+                  res = this.checked
+                  // console.log(res)
+                  if(res){
+                      // console.log(this.value)
+                      totalnum += Number($(this).val())
+                      // 把当前选中的商品id和数量定义为{},加入数组中
+                      goodsid = $(this).attr('id')
+                      goodsnum = Number($(this).parents('ul').find('input[name=num]').val())
+                      items.push({'goodsid':goodsid,'num':goodsnum})
+                  }
+              })
+               // 把计算的总价设置到html中
+                $('#J_Total').text(totalnum.toFixed(2))
+                // 把选择的商品数据,加入到表单中
+                res = JSON.stringify(items); 
+                $('input[name=items]').val(res)
+            }
+
+            $('.acc .check').click(computer)
+
+
+            $('.check-all').click(function(){
+
+                if(this.checked){
+                    // 把所有的都选中
+                    $('.acc .check').attr('checked',true)
+
+                }else{
+                    // 把所有都取消
+                    $('.acc .check').attr('checked',false)
+                }
+                computer()
+
+            })
+
+              var user = '{{ request.session.VipUser.username }}'
+                // 让a链接可以进行表单提交
+                $('#J_Go').click(function(){
+                    // 判断表单中的items是否为空
+                    var res = $('input[name=items]').val()
+                    if(res){
+                        // 判断用户是否登录
+                        if(user){
+                         // 执行表单提交
+                         $(this).parents('form').submit()
+                            
+                        }else{
+                            location.href = '{% url "myhome_login" %}?next=/shopcartlist/'
+                        }
+
+                        
+                    }else{
+                        alert('请选择购买的商品')
+                    }
+                })
+
+
+            // //获取页面中所有选中的元素
+            // $('.check').click(function(){
+            //   computer()
+            //   //获取当前元素是否以选中
+            //   // res = $(this).attr('checked')
+            //   // console.log(res)
+            // //   res = this.checked
+            // //   // console.log(res)
+            // //   if(res){
+            // //       // console.log(this.value)
+            // //       totalnum += Number(this.value)
+            // //   }else{
+            // //       totalnum -= Number(this.value)
+            // //   }
+            // //   // console.log(totalnum)
+            // //   $('#J_Total').text(totalnum)
+            // })
+        })
+
+        </script>
+
+
+
+      </div>
+    </div>
+  </div>
+  <div class="clear"></div>
+  <div class="float-bar-wrapper">
+    <div id="J_SelectAll2" class="select-all J_SelectAll">
+      <div class="cart-checkbox">
+        <input class="check-all check" id="J_SelectAllCbx2" name="select-all" value="true" type="checkbox">
+        <label for="J_SelectAllCbx2"></label>
+      </div>
+      <span>全选</span></div>
+    <div class="operations">
+      <a href="#" hidefocus="true" class="deleteAll">删除</a>
+      <a href="#" hidefocus="true" class="J_BatchFav">移入收藏夹</a></div>
+    <div class="float-bar-right">
+      <div class="amount-sum">
+        <span class="txt">已选商品</span>
+        <em id="J_SelectedItemsCount">0</em>
+        <span class="txt">件</span>
+        <div class="arrow-box">
+          <span class="selected-items-arrow"></span>
+          <span class="arrow"></span>
+        </div>
+      </div>
+      <div class="price-sum">
+        <span class="txt">合计:</span>
+        <strong class="price">¥
+          <em id="J_Total">0.00</em></strong>
+      </div>
+      <div class="btn-area">
+          <form action="{% url 'myhome_ordercheck'%}" method="get">
+              {% csrf_token %}
+              <input type="hidden" name="items" value="">
+              <a href="javascript:void(0)" id="J_Go" class="submit-btn submit-btn-disabled" aria-label="请注意如果没有选择宝贝，将无法结算">
+                  <span>结&nbsp;算</span>
+              </a>
+          </form>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer-hd">
+      <p>
+        <a href="#">恒望科技</a>
+        <b>|</b>
+        <a href="#">商城首页</a>
+        <b>|</b>
+        <a href="#">支付宝</a>
+        <b>|</b>
+        <a href="#">物流</a></p>
+    </div>
+    <div class="footer-bd">
+      <p>
+        <a href="#">关于恒望</a>
+        <a href="#">合作伙伴</a>
+        <a href="#">联系我们</a>
+        <a href="#">网站地图</a>
+        <em>© 2015-2025 Hengwang.com 版权所有</em></p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block cb %}
+    <div class=tip>
+        <div id="sidebar">
+            <div id="wrap">
+                <div id="prof" class="item ">
+                    <a href="# ">
+                        <span class="setting "></span>
+                    </a>
+                    <div class="ibar_login_box status_login ">
+                        <div class="avatar_box ">
+                            <p class="avatar_imgbox "><img src="/static/myhome/images/no-img_mid_.jpg " /></p>
+                            <ul class="user_info ">
+                                <li>用户名sl1903</li>
+                                <li>级&nbsp;别普通会员</li>
+                            </ul>
+                        </div>
+                        <div class="login_btnbox ">
+                            <a href="# " class="login_order ">我的订单</a>
+                            <a href="# " class="login_favorite ">我的收藏</a>
+                        </div>
+                        <i class="icon_arrow_white "></i>
+                    </div>
+
+                </div>
+                <div id="shopCart " class="item ">
+                    <a href="{% url 'myhome_shopcartlist' %}">
+                        <span class="message "></span>
+                    </a>
+                    <p>
+                        购物车
+                    </p>
+                    <p class="cart_num ">0</p>
+                </div>
+                <div id="asset " class="item ">
+                    <a href="# ">
+                        <span class="view "></span>
+                    </a>
+                    <div class="mp_tooltip ">
+                        我的资产
+                        <i class="icon_arrow_right_black "></i>
+                    </div>
+                </div>
+
+                <div id="foot " class="item ">
+                    <a href="# ">
+                        <span class="zuji "></span>
+                    </a>
+                    <div class="mp_tooltip ">
+                        我的足迹
+                        <i class="icon_arrow_right_black "></i>
+                    </div>
+                </div>
+
+                <div id="brand " class="item ">
+                    <a href="#">
+                        <span class="wdsc "><img src="/static/myhome/images/wdsc.png " /></span>
+                    </a>
+                    <div class="mp_tooltip ">
+                        我的收藏
+                        <i class="icon_arrow_right_black "></i>
+                    </div>
+                </div>
+
+                <div id="broadcast " class="item ">
+                    <a href="# ">
+                        <span class="chongzhi "><img src="/static/myhome/images/chongzhi.png " /></span>
+                    </a>
+                    <div class="mp_tooltip ">
+                        我要充值
+                        <i class="icon_arrow_right_black "></i>
+                    </div>
+                </div>
+
+                <div class="quick_toggle ">
+                    <li class="qtitem ">
+                        <a href="# "><span class="kfzx "></span></a>
+                        <div class="mp_tooltip ">客服中心<i class="icon_arrow_right_black "></i></div>
+                    </li>
+                    <!--二维码 -->
+                    <li class="qtitem ">
+                        <a href="#none "><span class="mpbtn_qrcode "></span></a>
+                        <div class="mp_qrcode " style="display:none; "><img src="/static/myhome/images/weixin_code_145.png " /><i class="icon_arrow_white "></i></div>
+                    </li>
+                    <li class="qtitem ">
+                        <a href="#top " class="return_top "><span class="top "></span></a>
+                    </li>
+                </div>
+
+                <!--回到顶部 -->
+                <div id="quick_links_pop " class="quick_links_pop hide "></div>
+
+            </div>
+
+        </div>
+        <div id="prof-content " class="nav-content ">
+            <div class="nav-con-close ">
+                <i class="am-icon-angle-right am-icon-fw "></i>
+            </div>
+            <div>
+                我
+            </div>
+        </div>
+        <div id="shopCart-content " class="nav-content ">
+            <div class="nav-con-close ">
+                <i class="am-icon-angle-right am-icon-fw "></i>
+            </div>
+            <div>
+                购物车
+            </div>
+        </div>
+        <div id="asset-content " class="nav-content ">
+            <div class="nav-con-close ">
+                <i class="am-icon-angle-right am-icon-fw "></i>
+            </div>
+            <div>
+                资产
+            </div>
+
+            <div class="ia-head-list ">
+                <a href="# " target="_blank " class="pl ">
+                    <div class="num ">0</div>
+                    <div class="text ">优惠券</div>
+                </a>
+                <a href="# " target="_blank " class="pl ">
+                    <div class="num ">0</div>
+                    <div class="text ">红包</div>
+                </a>
+                <a href="# " target="_blank " class="pl money ">
+                    <div class="num ">￥0</div>
+                    <div class="text ">余额</div>
+                </a>
+            </div>
+
+        </div>
+        <div id="foot-content " class="nav-content ">
+            <div class="nav-con-close ">
+                <i class="am-icon-angle-right am-icon-fw "></i>
+            </div>
+            <div>
+                足迹
+            </div>
+        </div>
+        <div id="brand-content " class="nav-content ">
+            <div class="nav-con-close ">
+                <i class="am-icon-angle-right am-icon-fw "></i>
+            </div>
+            <div>
+                收藏
+            </div>
+        </div>
+        <div id="broadcast-content " class="nav-content ">
+            <div class="nav-con-close ">
+                <i class="am-icon-angle-right am-icon-fw "></i>
+            </div>
+            <div>
+                充值
+            </div>
+        </div>
+    </div>
+    <script>
+        window.jQuery || document.write('<script src="basic/js/jquery.min.js "><\/script>');
+    </script>
+    <script type="text/javascript " src="/static/myhome/basic/js/quick_links.js "></script>
+{% endblock %}

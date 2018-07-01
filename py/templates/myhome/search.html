@@ -44,10 +44,8 @@
                 <div class="am-u-sm-12 am-u-md-12">
                 <div class="theme-popover">                                                     
                     <div class="searchAbout">
-                        <span class="font-pale">相关搜索：</span>
-                        <a title="坚果" href="#">{{ goodslist.0.typeid.name }}</a>
-                        <a title="瓜子" href="#">瓜子</a> 
-                        <a title="鸡腿" href="#">豆干</a>
+                        <span class="font-pale">相关搜索：{{ request.GET.keywords }}</span>
+
                     </div>
                     <ul class="select">
                         <p class="title font-normal">
@@ -88,8 +86,8 @@
                             {% endfor %}
                         </ul> 
                     </div>
-<!--                     <div class="search-side">
-
+                    <!-- <div class="search-side"> -->
+<!-- 
                         <div class="side-title">
                             经典搭配
                         </div>
@@ -134,8 +132,8 @@
                             </div>
                         </li>
 
-                    </div> -->
-                    <div class="clear"></div>
+                    </div>
+                    <div class="clear"></div> -->
                     <!--分页 -->
                     <ul class="am-pagination am-pagination-right">
                         <li class="am-disabled"><a href="#">«</a></li>
@@ -342,3 +340,5 @@
     </script>
     <script type="text/javascript " src="/static/myhome/basic/js/quick_links.js "></script>
 {% endblock %}
+
+
