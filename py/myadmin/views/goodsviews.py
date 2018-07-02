@@ -77,7 +77,7 @@ def delete(request):
     except:
         data = {'msg':'删除失败','code':1}
 
-    # return JsonResponse(data)
+    return JsonResponse(data)
 
 
 

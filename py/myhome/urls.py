@@ -66,5 +66,7 @@ urlpatterns = [
     url(r'^mycenter/$', views.mycenter,name='myhome_mycenter'),
     # 我的订单
     url(r'^myorders/$', views.myorders,name='myhome_myorders'),
-
+    #个人信息
+    url(r'^information/$', views.information,name='myhome_information'),
+    
 ]

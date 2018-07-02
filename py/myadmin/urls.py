@@ -40,4 +40,11 @@ urlpatterns = [
     url(r'^goods/index/$',goodsviews.index,name='myadmin_goods_list'),
     url(r'^goods/delete/$',goodsviews.delete,name='myadmin_goods_delete'),
     url(r'^goods/edit/$',goodsviews.edit,name='myadmin_goods_edit'),
+
+
+
+    # 后台登录和登录验证
+    url(r'^login/$', views.login,name='myadmin_login'),
+
+
 ]

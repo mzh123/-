@@ -95,17 +95,17 @@ def login(request):
             if res:
                 #密码正确
                 request.session['VipUser'] = {'uid':ob.id,'username':ob.username}
-
+            
                 return HttpResponse('<script>alert("登录成功");location.href="'+nexturl+'"</script>')
 
         except:
-            #用户名错误
-            # 接收表单提交的数据,
-            data = request.POST.copy().dict()
-            #删除掉csrf验证的字段数据
-            del data['csrfmiddlewaretoken']
-            del data['vcode']
-
+            # #用户名错误
+            # # 接收表单提交的数据,
+            # data = request.POST.copy().dict()
+            # #删除掉csrf验证的字段数据
+            # del data['csrfmiddlewaretoken']
+            # del data['vcode']
+            pass
 
 
         return HttpResponse('<script>alert("用户名或密码错误,请重新登录");history.back(-1)</script>')
@@ -426,14 +426,21 @@ def buy(request):
     # 获取当前的订单id
     orderid = request.GET['orderid']
 
+    # 获取当前用户的所有订单
+    data = Address.objects.filter(uid=request.session['VipUser']['uid'])
+
+    context = {'orderlist':data}
+
+
+
     print(orderid)
 
-    return render(request,'myhome/buy.html')
+    return render(request,'myhome/buy.html',context)
 
 # 我的个人中心
 def mycenter(request):
     
-    return render(request,'myhome/word/index.html')
+    return render(request,'myhome/word/mycenter.html')
 
 # 我的订单
 def myorders(request):
@@ -443,3 +450,9 @@ def myorders(request):
     context = {'orderlist':data}
     
     return render(request,'myhome/word/myorders.html',context)
+
+#个人中心
+def information(request):
+
+
+    return render(request,'myhome/word/information.html')

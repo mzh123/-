@@ -76,7 +76,7 @@ def delete(request):
         #判断当前类下是否为子类
 
     num = Types.objects.filter(pid=tid).count()
-
+    #如果num 不等于　0
     if num != 0:
         data = {'msg':'当前类下有子类，不能删除','code':1}
     else:
@@ -90,4 +90,14 @@ def delete(request):
     return JsonResponse(data)
 
 def edit(request):
-    pass
+    #接受参数
+    uid = request.GET.get('uid',None)
+    #获取对象
+    ob = Goods.objects.get(id=uid)
+
+    if request.method == 'GET':
+        
+        #分配数据
+        context = {'uinfo':ob}
+        #显示编辑页面
+        return render(request,'myadmin/goods/edit.html',context)

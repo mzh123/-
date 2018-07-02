@@ -205,9 +205,9 @@ def uploads(request):
     # 打开文件
     destination = open("./static/pics/"+filename,"wb+")
 
-    # 分块写入文件  
-    for chunk in myfile.chunks():      
-       destination.write(chunk)  
+    # 分块写入文件
+    for chunk in myfile.chunks():   
+       destination.write(chunk)
 
     # # destination.write(myfile.read()) #不推荐
 
