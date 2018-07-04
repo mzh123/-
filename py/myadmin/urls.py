@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from .views import views,userviews,typesviews,goodsviews
+from .views import views,userviews,typesviews,goodsviews,authviews,orderviews
 
 urlpatterns = [
     #后台首页
@@ -25,6 +25,24 @@ urlpatterns = [
     url(r'^user/delete/$',userviews.delete,name='myadmin_user_delete'),
     url(r'^user/edit/$',userviews.edit,name='myadmin_user_edit'),
 
+
+
+  
+
+
+    # 后台权限管理
+
+    # 后台用户添加
+    url(r'^auth/user/add/$',authviews.useradd,name='auth_user_add'),
+    # 后台用户列表
+    url(r'^auth/user/list/$',authviews.userlist,name='auth_user_list'),
+    url(r'^auth/user/del/(?P<uid>[0-9]+)/$',authviews.userdel,name='auth_user_del'),
+
+    # 后台组添加
+    url(r'^auth/group/add/$',authviews.groupadd,name='auth_group_add'),
+    # 后台组列表
+    url(r'^auth/group/list/$',authviews.grouplist,name='auth_group_list'),
+    url(r'^auth/group/edit/(?P<gid>[0-9]+)/$',authviews.groupedit,name='auth_group_edit'),
 
 
     #商品分类管理
@@ -41,10 +59,17 @@ urlpatterns = [
     url(r'^goods/delete/$',goodsviews.delete,name='myadmin_goods_delete'),
     url(r'^goods/edit/$',goodsviews.edit,name='myadmin_goods_edit'),
 
+    #订单列表
+    url(r'^order/index/$',orderviews.index,name='myadmin_order_list'),
+
 
 
     # 后台登录和登录验证
-    url(r'^login/$', views.login,name='myadmin_login'),
+    url(r'^login/$', authviews.mylogin,name='myadmin_login'),
+
+    # 退出登录
+    url(r'^loginout/$',authviews.mylogout,name='admin_loginout'),
+
 
 
 ]

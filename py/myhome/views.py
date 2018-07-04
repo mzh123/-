@@ -85,6 +85,11 @@ def login(request):
         #执行登录
         #根据用户先获取用户对象,再检测密码是否正确
 
+        #先判断验证码是否正确
+        if request.POST['vcode'].upper() != request.session['verifycode'].upper():
+            return HttpResponse('<script>alert("验证码错误");history.back(-1)</script>')
+
+
 
         try:
             ob = Users.objects.get(username = request.POST['username'])
@@ -390,8 +395,6 @@ def ordercreate(request):
     print(cart)
 
 
-
-
     # 生成订单
     ob = Orders()
     ob.uid = Users.objects.get(id=uid)
@@ -423,17 +426,14 @@ def ordercreate(request):
 
 # 支付
 def buy(request):
-    # 获取当前的订单id
+
     orderid = request.GET['orderid']
 
-    # 获取当前用户的所有订单
-    data = Address.objects.filter(uid=request.session['VipUser']['uid'])
+    data = Orders.objects.get(id=orderid)
+    print(data)
 
     context = {'orderlist':data}
 
-
-
-    print(orderid)
 
     return render(request,'myhome/buy.html',context)
 

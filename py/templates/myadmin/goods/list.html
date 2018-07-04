@@ -107,12 +107,11 @@
                                     <td class="am-text-middle">{{ v.addtime|date:"Y-m-d H:i:s" }}</td>
                                     <td class="am-text-middle">
                                         <div class="tpl-table-black-operation">
-                                            <a href="{% url 'myadmin_user_edit' %}?uid={{ v.id }}">
+                                            <a href="{% url 'myadmin_goods_edit' %}?uid={{ v.id }}">
                                                 <i class="am-icon-pencil"></i> 编辑
                                             </a>
                                             <a href="javascript:;" class="tpl-table-black-operation-del">
-                                                <i class="am-icon-trash"></i> 删除
-                                            </a>
+                                                <i class="am-icon-trash"></i> 下架
                                         </div>
                                     </td>
                                 </tr>
@@ -162,4 +161,4 @@
         },'json')
     })
 </script>
-{% endblock%}
+{% endblock %}

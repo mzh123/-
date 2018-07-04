@@ -92,7 +92,8 @@ def edit(request):
     if request.method == 'GET':
         
         #分配数据
-        context = {'uinfo':ob}
+        tlist = gettypesorder()
+        context = {'tlist':tlist,'uinfo':ob}
         #显示编辑页面
         return render(request,'myadmin/goods/edit.html',context)
     
@@ -113,6 +114,7 @@ def edit(request):
 
             ob.title = request.POST['title']
             ob.descr = request.POST['descr']
+            ob.descr = request.POST['info']
             ob.price = request.POST['price']
             ob.store = request.POST['store']
             #完成更新 

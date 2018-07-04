@@ -3,15 +3,20 @@ from django.http import HttpResponse,JsonResponse
 
 from .. models import Users
 import os
-
+from django.contrib.auth.decorators import permission_required
 # Create your views here.
 
+
+
+
+@permission_required('myadmin.show_users',raise_exception = True)
 
 #会员列表
 def list(request):
 
     # 获取搜索条件
     types = request.GET.get('type',None)
+    # 搜索参数
     keywords = request.GET.get('keywords',None)
 
     # 判断是否具有搜索条件
@@ -74,6 +79,9 @@ def list(request):
     return render(request,'myadmin/user/list.html',context)
 
 
+
+
+@permission_required('myadmin.insert_users',raise_exception = True)
 #会员添加
 def add(request):
 
@@ -115,7 +123,7 @@ def add(request):
 
 
 
-
+@permission_required('myadmin.del_users',raise_exception = True)
 #会员删除
 def delete(request):
     try:
@@ -137,6 +145,8 @@ def delete(request):
 
 
 
+@permission_required('myadmin.edit_users',raise_exception = True)
+
 #显示编辑和执行编辑
 def edit(request):
     #接受参数
@@ -155,12 +165,6 @@ def edit(request):
 
 
         try:
-        # # 接受表单提交的数据,
-        # data = request.POST.copy().dict()
-        # # 删除掉 csrf验证的字段数据
-        # del data['csrfmiddlewaretoken']
-
-
             #直接判段是否上传了新的图片
             if request.FILES.get('pic',None):
                 #判断是否使用的默认图

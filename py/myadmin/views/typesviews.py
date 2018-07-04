@@ -3,6 +3,9 @@ from django.http import HttpResponse,JsonResponse
 
 from .. models import Types
 # Create your views here.
+from django.contrib.auth.decorators import permission_required
+
+
 
 def gettypesorder():
     
@@ -22,7 +25,7 @@ def gettypesorder():
             
 
 
-
+@permission_required('myadmin.insert_types',raise_exception = True)
 def add(request):
     if request.method == 'GET':
         #返回一个添加的页面
@@ -54,7 +57,7 @@ def add(request):
 
         
 
-
+@permission_required('myadmin.show_types',raise_exception = True)
 
 def index(request):
     #获取所有的分类信息
@@ -66,6 +69,11 @@ def index(request):
     context = {'tlist':tlist}
 
     return render(request,'myadmin/types/list.html',context)
+
+
+
+
+@permission_required('myadmin.del_types',raise_exception = True)
 
 
 
@@ -89,15 +97,34 @@ def delete(request):
 
     return JsonResponse(data)
 
-def edit(request):
-    #接受参数
-    uid = request.GET.get('uid',None)
-    #获取对象
-    ob = Goods.objects.get(id=uid)
 
+
+
+
+
+@permission_required('myadmin.edit_types',raise_exception = True)
+
+def edit(request):
+
+    
+    tid = request.GET.get('tid',None)
+    ob = Types.objects.get(id=tid)
     if request.method == 'GET':
+        tlist = gettypesorder()
+
+        context = {'tlist':tlist,'type':ob}
+        # context = {'ob':ob}
+
+        return render(request,'myadmin/types/edit.html',context) 
+
+    elif request.method == 'POST':
+        try:
+            # 获取当前对象,执行修改
+            print(request.POST)
+            # ob.pid = request.POST['pid']
+            ob.name = request.POST['name']
+            ob.save()
         
-        #分配数据
-        context = {'uinfo':ob}
-        #显示编辑页面
-        return render(request,'myadmin/goods/edit.html',context)
+            return HttpResponse('<script>alert("修改成功");location.href="/myadmin/types/index/"</script>')
+        except:
+            return HttpResponse('<script>alert("修改失败");location.href="/myadmin/types/edit/'+'?tid='+str(tid)+'"</script>')

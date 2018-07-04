@@ -13,12 +13,15 @@ class AdminLoginMiddleware:
         u = request.path
 
 
-        # # 定义后台请求的登录验证  /myadmin/user/add/
-        # if re.match('/myadmin/',u) and u not in ['/myadmin/login/']:
-        #     # 判断是否登录
-        #     if not request.session.get('AdminLogin',None):
-        #         # 没有登录
-        #         return HttpResponse('<script>alert("请先登录");location.href="/myadmin/login/?next='+u+'"</script>')
+        # 定义允许的请求路径
+        urllist = ['/myadmin/login/','/myadmin/getvcode/']
+
+        # 定义后台请求的登录验证  /myadmin/user/add/
+        if re.match('/myadmin/',u) and u not in ['/myadmin/login/']:
+            # 判断是否登录
+            if not request.session.get('_auth_user_id',None):
+                # 没有登录
+                return HttpResponse('<script>alert("请先登录");location.href="/myadmin/login/?next='+u+'"</script>')
 
 
 

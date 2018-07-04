@@ -55,12 +55,10 @@
                     <i class="am-icon-envelope-o"></i>
                   </label>
 
-                  <div style="position:relative;">
-                    
-                    <input type="text" name="vcode" id="email" placeholder="请输入验证码">
-                    
-                    <img src="{% url 'myhome_vcode' %}" onclick="this.src='/vcode?'+Math.random()" style="position: absolute;top: 10px;right:10px; ">
-                  </div>
+                    <div class="am-form-group" style="position: relative;">
+                        <input type="text" name="vcode" class="tpl-form-input"  placeholder="请输入验证码">
+                        <img src="{% url 'myhome_vcode' %}" style="position: absolute;top:0px;right:0px" onclick="this.src='/vcode?'+Math.random()">
+                    </div>
 
                 </div>
 

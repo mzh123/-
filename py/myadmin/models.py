@@ -16,6 +16,15 @@ class Users(models.Model):
     status = models.IntegerField(default=0)
     addtime = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        # 指定生成权限
+        permissions = (
+            ("show_users", "查看会员管理"),
+            ("insert_users", "添加会员"),
+            ("edit_users", "修改会员"),
+            ("del_users", "删除会员"),
+        )
+
 
 # 会员地址
 class Address(models.Model):
@@ -26,7 +35,14 @@ class Address(models.Model):
     xiangxi = models.CharField(max_length=50)
     status = models.IntegerField(default=0)
 
-
+    class Meta:
+        # 指定生成权限
+        permissions = (
+            ("show_address", "查看地址管理"),
+            ("insert_address", "添加地址"),
+            ("edit_address", "修改地址"),
+            ("del_address", "删除地址"),
+        )
 
 
 
@@ -39,6 +55,15 @@ class Types(models.Model):
 
     def __str__(self):
         return '<Types: Types object:'+self.name+'>'
+
+    class Meta:
+        # 指定生成权限
+        permissions = (
+            ("show_types", "查看商品分类管理"),
+            ("insert_types", "添加商品分类"),
+            ("edit_types", "修改商品分类"),
+            ("del_types", "删除商品分类"),
+        )
 
 
 # 商品模型
@@ -57,6 +82,16 @@ class  Goods(models.Model):
     clicknum = models.IntegerField(default=0)
     addtime = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        # 指定生成权限
+        permissions = (
+            ("show_goods", "查看商品管理"),
+            ("insert_goods", "添加商品"),
+            ("edit_goods", "修改商品"),
+            ("del_goods", "删除商品"),
+        )
+
+
 
 # 订单模型
 class Orders(models.Model):
@@ -66,6 +101,16 @@ class Orders(models.Model):
     totalnum = models.IntegerField()
     status = models.IntegerField(default=0)
     addtime = models.DateTimeField(auto_now_add=True,null=True)
+
+    class Meta:
+        # 指定生成权限
+        permissions = (
+            ("show_order", "查看订单管理"),
+            ("insert_order", "添加订单"),
+            ("edit_order", "修改订单"),
+            ("del_order", "删除订单"),
+        )
+
 
 # 订单详情
 class OrderInfo(models.Model):
